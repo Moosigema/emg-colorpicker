@@ -78,7 +78,8 @@ example:
 - `visible` : *boolean* type, if true, the color picker is visible, false the color picker is invisible.
 - `useGradient` *boolean* type, if true, you will tools for gradient color
 - `coordinates` : *object* type, the color picker has the css attribute `position: absolute;` and `x` (`int` type) is for `left` attribute in px and `y` is for `top` attribute
-```json
+
+```
 let colorPickerCoordinates = {
 	x: 300,
 	y: 300
