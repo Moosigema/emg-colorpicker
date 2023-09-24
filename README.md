@@ -85,11 +85,18 @@ example:
 - `useGradient` *boolean* type, if true, you will tools for gradient color
 - `coordinates` : *object* type, the color picker has the css attribute `position: absolute;` and `x` (`int` type) is for `left` attribute in px and `y` is for `top` attribute
 
+<<<<<<< HEAD
 ```json
 
 colorPickerCoordinates = {
 	"x": 300,
 	"y": 300
+=======
+```
+let colorPickerCoordinates = {
+	x: 300,
+	y: 300
+>>>>>>> 90c4dcaa075eb0c9781c061b318eacbf92cff60d
 }
 
 ```
