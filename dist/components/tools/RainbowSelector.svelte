@@ -2,9 +2,9 @@
     //@ts-nocheck
     import { onMount } from 'svelte';
     import { createEventDispatcher } from 'svelte';
-    import {determineRainbowColor, findPercentageByColor} from "$lib/utils/api"
+    import {determineRainbowColor, findPercentageByColor} from "../../utils/api"
 
-    import CursorSelector from '$lib/components/tools/CursorSelector.svelte';
+    import CursorSelector from './CursorSelector.svelte';
     
     export let isRainbowCursorMoving = false
     export let rainbowCursorPosition = 0

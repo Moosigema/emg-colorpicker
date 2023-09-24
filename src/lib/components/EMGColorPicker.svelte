@@ -54,9 +54,9 @@
         </div>
     {/if}
     {#if solidSelected}
-        <SolidPicker  colorHexa={solidColor} on:colorchange/>
+        <SolidPicker  colorHexa={solidColor} on:colorchanged on:colorchanging/>
     {:else if gradientSelected}
-        <GradientPicker gradient={gradientColors} on:gradientchange/>
+        <GradientPicker gradient={gradientColors} on:gradientchanging on:gradientchanged/>
     {/if}
 </div>
 

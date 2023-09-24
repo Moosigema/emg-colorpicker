@@ -2,9 +2,9 @@
     //@ts-nocheck
     import { onMount } from 'svelte';
     import { createEventDispatcher } from 'svelte';
-    import {determineRainbowColor, findPercentageByColor,  getCssGradient} from "$lib/utils/api"
+    import {determineRainbowColor, findPercentageByColor,  getCssGradient} from "../../utils/api"
 
-    import CursorSelector from '$lib/components/tools/CursorSelector.svelte';
+    import CursorSelector from './CursorSelector.svelte';
     
     export let isGradientCursorMoving = false
     export let gradientColors = [

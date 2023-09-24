@@ -1,19 +1,29 @@
 <script>
     //@ts-nocheck
     import { onMount } from 'svelte';  
-    import {getColorByEyeDropper, handleTextColor, hexToPercentage} from "$lib/utils/api"
+    import {getColorByEyeDropper, handleTextColor, hexToPercentage, getCssGradient, sleep} from "../utils/api"
     import { createEventDispatcher } from 'svelte';
 
-    import RainbowSelector from '$lib/components/tools/RainbowSelector.svelte';
-    import ShadeSelector from '$lib/components/tools/ShadeSelector.svelte';
-    import OpacitySelector from '$lib/components/tools/OpacitySelector.svelte';
+    import RainbowSelector from './tools/RainbowSelector.svelte';
+    import ShadeSelector from './tools/ShadeSelector.svelte';
+    import OpacitySelector from './tools/OpacitySelector.svelte';
+    import GradientSelector from './tools/GradientSelector.svelte';
 
-    import eyeDropperIcon from "$lib/assets/eyeDropper.svg"
-    import addIcon from "$lib/assets/add.svg"
+    import eyeDropperIcon from "../assets/eyeDropper.svg"
+    import addIcon from "../assets/add.svg"
     
-    export let colorHexa = "#FFFFFFFF"
+    export let gradient = [
+        {
+            pourcentage: 0,
+            color: "#01093f"
+        },
+        {
+            pourcentage: 100,
+            color: "#FFFFFF"
+        }
+    ]
     
-
+    let colorHexa;
     const dispatch = createEventDispatcher();
 
 
@@ -35,49 +45,78 @@
     let shadeColor 
     let opacityColor
     let resetShade;
+    let gradientColors;
+
+    let gradientReturn;
 
 
     let isShadeCursorMoving = false
     let isOpacityCursorMoving = false
     let isRainbowCursorMoving = false
+    let isGradientCursorMoving = false
     
 
     let listSavedColor = []
 
 
-    $: setUpColor(colorHexa)
-
-    $: onColorChange( isRainbowCursorMoving)
-    $: onColorChange( isShadeCursorMoving)
-    $: onColorChange( isOpacityCursorMoving)
-
+    $: setUpColor(gradient)
+    
+    $: onGradientChange(isRainbowCursorMoving)
+    $: onGradientChange(isShadeCursorMoving)
+    $: onGradientChange(isOpacityCursorMoving)
+    $: onGradientChange(isGradientCursorMoving)
 
     onMount(async () => {
         hasEyeDropperSupport = () => ('EyeDropper' in window);
         if(localStorage.getItem('listSavedColor')){
             listSavedColor = JSON.parse(localStorage.getItem('listSavedColor'));
         }
-        // setSavedColor(colorHexa)
     })
 
-    function onColorChange(cursorUp){
+    function onGradientChange(cursorUp){
         
         if(!cursorUp){
-            dispatch('colorchanged', {fullHexaColor: fullHexaColor, shortHexaColor:shortHexaColor, hexaColorOpacity: colorOpacityHexa, intColorOpacity: colorOpacityInt});
+            dispatch('gradientchanged', gradientReturn);
         }
     }
 
     
-    function setUpColor(colorHexa){
-        let textColor = handleTextColor(colorHexa)
-        fullHexaColor = textColor
-        shortHexaColor = textColor.substring(0,7)
-        colorOpacityHexa = textColor.substring(7,10)
+    function setUpColor(gradient){
+        const isValidStructure = gradient.every(item => {
+            return (
+                typeof item === 'object' && // Vérifie que l'élément est un objet
+                'pourcentage' in item && typeof item.pourcentage === 'number' &&
+                'color' in item && typeof item.color === 'string'
+            );
+        });
+        if(isValidStructure && gradient.length >= 2){
+            colorHexa = gradient[0].color
+        }else{
+            gradient = [
+                {
+                    pourcentage: 0,
+                    color: "#01093f"
+                },
+                {
+                    pourcentage: 100,
+                    color: "#FFFFFF"
+                }
+            ]
+            
+        }
         
-        setInput(fullHexaColor)
-        setOpacityCursor(colorOpacityHexa)
-        setRainbowCursor(shortHexaColor)
-        setShadeCursor(shortHexaColor)
+        initGradient(gradient)
+    }
+
+    function initGradient(gradient){
+        colorHexa = gradient[0].color
+        let textColor = handleTextColor(colorHexa)
+ 
+        setInput(textColor)
+        setReturnColor(textColor.substring(0,7), textColor.substring(7,10))
+        setOpacityCursor(textColor.substring(7,10))
+        setRainbowCursor(textColor.substring(0,7))
+        setShadeCursor(textColor.substring(0,7))
         resetShade = Date.now()
     }
 
@@ -85,6 +124,7 @@
         isRainbowCursorMoving = false 
         isShadeCursorMoving = false
         isOpacityCursorMoving = false
+        isGradientCursorMoving = false
     }
 
 
@@ -118,13 +158,14 @@
     }
 
     function setReturnColor(shortHexa, opacityHexa){
-        shortHexaColor = shortHexa.toLocaleUpperCase()
-        colorOpacityHexa = opacityHexa.toLocaleUpperCase()
+        shortHexaColor = shortHexa
+        colorOpacityHexa = opacityHexa
         
         setOpacity(opacityHexa)
-        fullHexaColor = shortHexaColor+colorOpacityHexa
-    
-        dispatch('colorchanging', {fullHexaColor: fullHexaColor, shortHexaColor:shortHexaColor, hexaColorOpacity: colorOpacityHexa, intColorOpacity: colorOpacityInt});
+        fullHexaColor = (shortHexaColor+colorOpacityHexa).toLocaleUpperCase()
+        
+        // console.log(`Dispatch: ${{fullHexaColor: fullHexaColor, shortHexaColor:shortHexaColor, colorOpacityHexa: colorOpacityHexa}}`)
+        // dispatch('change', {fullHexaColor: fullHexaColor, shortHexaColor:shortHexaColor, colorOpacityHexa: colorOpacityHexa});
         
         return fullHexaColor
     }
@@ -175,32 +216,59 @@
     }
 
     //set the saved color that has been clicked on
-    function setSavedColor(savedColor){
-        let opacityHexa =  savedColor.color.substring(7,10)
-        let shortHexa =  savedColor.color.substring(0,7)
-        setRainbowCursor(shortHexa)
-        setShadeCursor(shortHexa)
-        setReturnColor(shortHexa, opacityHexa)
-        setOpacityCursor(opacityHexa)
-        resetShade = Date.now()
-        onColorChange(false)
+    async function setSavedColor(savedColor){
+        if(savedColor.type == "solid"){
+            let opacityHexa =  savedColor.color.substring(7,10)
+            let shortHexa =  savedColor.color.substring(0,7)
+            setRainbowCursor(shortHexa)
+            setShadeCursor(shortHexa)
+            setReturnColor(shortHexa, opacityHexa)
+            setOpacityCursor(opacityHexa)
+            resetShade = Date.now()
+        }else{
+            gradient = savedColor.gradient
+            initGradient(gradient)
+        }
+        await sleep(100)
+        onGradientChange(false)
     }
 
     //add color to the saved list. Colors are saved in localStorage. 
     function addColor(){
-        let newColor = {
-            type: "solid",
-            color: fullHexaColor
-        }
-        listSavedColor.push(newColor)
-        listSavedColor = listSavedColor
+        listSavedColor = [...listSavedColor, {
+            type: "gradient",
+            gradient: JSON.parse(JSON.stringify(gradientColors))
+        }];
         localStorage.setItem('listSavedColor', JSON.stringify(listSavedColor));
     }
+
+    function changeSelectedColor(e){
+        let textColor = handleTextColor( e.detail.color)
+        let shortHexa = textColor.substring(0,7)
+        let opacityHexa = textColor.substring(7,10)
+        setRainbowCursor(shortHexa)
+        setShadeCursor(shortHexa)
+        setOpacityCursor(opacityHexa)
+        setReturnColor(shortHexa, opacityHexa)
+        resetShade = Date.now()
+    }
+
+
+    function onGradientChanging(e){
+        gradientColors = e.detail.gradient
+        gradientReturn =  e.detail
+        dispatch("gradientchanging", e.detail)
+    }
+
+
 
 </script>
     <svelte:body on:pointerup={onPointerUp}/>
      <!-- svelte-ignore a11y-no-noninteractive-element-to-interactive-role -->
-        
+        <div class="gradientTools">
+            <GradientSelector bind:isGradientCursorMoving  gradientColors={gradient} color={fullHexaColor} on:cursorselected={changeSelectedColor} on:gradientchanging={onGradientChanging} on:gradientchanged/>
+        </div>
+       
         <div class="colorAjustement">
 
             <ShadeSelector bind:isShadeCursorMoving={isShadeCursorMoving} colorShade={shadeColor} reset={resetShade} on:shadechange={onShadeChange}/>
@@ -217,7 +285,7 @@
             </div>
             <div class="colorPreview" style="background-color:{fullHexaColor};"></div>
             {#if hasEyeDropperSupport}
-                <div class="eyeDropper" role="button" tabindex="0" on:pointerdown|preventDefault|stopPropagation={openEyeDropper}>
+                <div class="eyeDropper" role="button" tabindex="0"  on:pointerdown|preventDefault|stopPropagation={openEyeDropper}>
                     <img src={eyeDropperIcon} height="15" width="15" alt="eyeDropper icon ">
                 </div>
             {/if}
@@ -233,19 +301,27 @@
             <div class="listColor">
                 {#each listSavedColor as item}
                     {#if item.type == "solid"}
-                    <div class="colorItem" style="background-color: {item.color}" role="button" tabindex="0" name="saved color {item.color}" on:pointerdown|preventDefault|stopPropagation={()=>{setSavedColor(item)}}></div>
+                        <div class="colorItem" style="background-color: {item.color}" role="button" name="saved color {item.color}" tabindex="0" on:pointerdown|preventDefault|stopPropagation={()=>{setSavedColor(item)}}></div>
+                    {:else if item.type == "gradient"}
+                        <div class="colorItem" style="background: {getCssGradient(item.gradient)}" role="button" tabindex="0" name="saved gradient" on:pointerdown|preventDefault|stopPropagation={()=>{setSavedColor(item)}}></div>
                     {/if}
                 {/each}
             </div>
         </div>
         
-
+        
 <style>
+
+    .gradientTools{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 10px;
+    }
 
     .colorAjustement{
         display: flex;
         justify-content: space-between;
-        margin-top: 10px;
     }
 
 

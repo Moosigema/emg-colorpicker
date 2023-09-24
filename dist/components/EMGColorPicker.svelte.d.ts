@@ -2,14 +2,23 @@
 /** @typedef {typeof __propDef.events}  EmgColorPickerEvents */
 /** @typedef {typeof __propDef.slots}  EmgColorPickerSlots */
 export default class EmgColorPicker extends SvelteComponentTyped<{
-    hexa?: string | undefined;
-    visible?: boolean | undefined;
+    solidColor: any;
     coordinates?: {
         x: number;
         y: number;
     } | undefined;
+    gradientColors?: {
+        pourcentage: number;
+        color: string;
+    }[] | undefined;
+    visible?: boolean | undefined;
+    useGradient?: boolean | undefined;
 }, {
     pointerdown: PointerEvent;
+    colorchanged: CustomEvent<any>;
+    colorchanging: CustomEvent<any>;
+    gradientchanging: CustomEvent<any>;
+    gradientchanged: CustomEvent<any>;
 } & {
     [evt: string]: CustomEvent<any>;
 }, {}> {
@@ -20,15 +29,24 @@ export type EmgColorPickerSlots = typeof __propDef.slots;
 import { SvelteComponentTyped } from "svelte";
 declare const __propDef: {
     props: {
-        hexa?: string | undefined;
-        visible?: boolean | undefined;
+        solidColor: any;
         coordinates?: {
             x: number;
             y: number;
         } | undefined;
+        gradientColors?: {
+            pourcentage: number;
+            color: string;
+        }[] | undefined;
+        visible?: boolean | undefined;
+        useGradient?: boolean | undefined;
     };
     events: {
         pointerdown: PointerEvent;
+        colorchanged: CustomEvent<any>;
+        colorchanging: CustomEvent<any>;
+        gradientchanging: CustomEvent<any>;
+        gradientchanged: CustomEvent<any>;
     } & {
         [evt: string]: CustomEvent<any>;
     };

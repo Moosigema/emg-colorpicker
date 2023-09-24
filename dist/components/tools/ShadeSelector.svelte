@@ -2,9 +2,9 @@
     //@ts-nocheck
     import { onMount } from 'svelte';
     import { createEventDispatcher } from 'svelte';
-    import {determineColor} from "$lib/utils/api"
+    import {determineColor} from "../../utils/api"
 
-    import CursorSelector from '$lib/components/tools/CursorSelector.svelte';
+    import CursorSelector from './CursorSelector.svelte';
 
     export let colorShade;
     export let isShadeCursorMoving = false

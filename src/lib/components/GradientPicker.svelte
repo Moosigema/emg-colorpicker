@@ -1,7 +1,7 @@
 <script>
     //@ts-nocheck
     import { onMount } from 'svelte';  
-    import {getColorByEyeDropper, handleTextColor, hexToPercentage, getCssGradient} from "$lib/utils/api"
+    import {getColorByEyeDropper, handleTextColor, hexToPercentage, getCssGradient, sleep} from "$lib/utils/api"
     import { createEventDispatcher } from 'svelte';
 
     import RainbowSelector from '$lib/components/tools/RainbowSelector.svelte';
@@ -47,6 +47,8 @@
     let resetShade;
     let gradientColors;
 
+    let gradientReturn;
+
 
     let isShadeCursorMoving = false
     let isOpacityCursorMoving = false
@@ -58,7 +60,11 @@
 
 
     $: setUpColor(gradient)
-
+    
+    $: onGradientChange(isRainbowCursorMoving)
+    $: onGradientChange(isShadeCursorMoving)
+    $: onGradientChange(isOpacityCursorMoving)
+    $: onGradientChange(isGradientCursorMoving)
 
     onMount(async () => {
         hasEyeDropperSupport = () => ('EyeDropper' in window);
@@ -66,6 +72,13 @@
             listSavedColor = JSON.parse(localStorage.getItem('listSavedColor'));
         }
     })
+
+    function onGradientChange(cursorUp){
+        
+        if(!cursorUp){
+            dispatch('gradientchanged', gradientReturn);
+        }
+    }
 
     
     function setUpColor(gradient){
@@ -203,7 +216,7 @@
     }
 
     //set the saved color that has been clicked on
-    function setSavedColor(savedColor){
+    async function setSavedColor(savedColor){
         if(savedColor.type == "solid"){
             let opacityHexa =  savedColor.color.substring(7,10)
             let shortHexa =  savedColor.color.substring(0,7)
@@ -216,6 +229,8 @@
             gradient = savedColor.gradient
             initGradient(gradient)
         }
+        await sleep(100)
+        onGradientChange(false)
     }
 
     //add color to the saved list. Colors are saved in localStorage. 
@@ -239,9 +254,10 @@
     }
 
 
-    function onGradientChange(e){
+    function onGradientChanging(e){
         gradientColors = e.detail.gradient
-        dispatch("gradientchange", e.detail)
+        gradientReturn =  e.detail
+        dispatch("gradientchanging", e.detail)
     }
 
 
@@ -250,7 +266,7 @@
     <svelte:body on:pointerup={onPointerUp}/>
      <!-- svelte-ignore a11y-no-noninteractive-element-to-interactive-role -->
         <div class="gradientTools">
-            <GradientSelector bind:isGradientCursorMoving  gradientColors={gradient} color={fullHexaColor} on:cursorselected={changeSelectedColor} on:gradientchange={onGradientChange}/>
+            <GradientSelector bind:isGradientCursorMoving  gradientColors={gradient} color={fullHexaColor} on:cursorselected={changeSelectedColor} on:gradientchanging={onGradientChanging} on:gradientchanged/>
         </div>
        
         <div class="colorAjustement">

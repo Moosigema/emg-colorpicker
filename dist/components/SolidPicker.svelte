@@ -1,15 +1,15 @@
 <script>
     //@ts-nocheck
     import { onMount } from 'svelte';  
-    import {getColorByEyeDropper, handleTextColor, hexToPercentage} from "$lib/utils/api"
+    import {getColorByEyeDropper, handleTextColor, hexToPercentage} from "../utils/api"
     import { createEventDispatcher } from 'svelte';
 
-    import RainbowSelector from '$lib/components/tools/RainbowSelector.svelte';
-    import ShadeSelector from '$lib/components/tools/ShadeSelector.svelte';
-    import OpacitySelector from '$lib/components/tools/OpacitySelector.svelte';
+    import RainbowSelector from './tools/RainbowSelector.svelte';
+    import ShadeSelector from './tools/ShadeSelector.svelte';
+    import OpacitySelector from './tools/OpacitySelector.svelte';
 
-    import eyeDropperIcon from "$lib/assets/eyeDropper.svg"
-    import addIcon from "$lib/assets/add.svg"
+    import eyeDropperIcon from "../assets/eyeDropper.svg"
+    import addIcon from "../assets/add.svg"
     
     export let colorHexa = "#FFFFFFFF"
     

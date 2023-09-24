@@ -1,0 +1,10 @@
+export function sleep(ms: any): Promise<any>;
+export function determineRainbowColor(percentage: any): string;
+export function interpolateColor(color1: any, color2: any, factor: any): string;
+export function determineColor(colorShade: any, shadeCursorPosition: any): string;
+export function findPercentageByColor(color: any): number;
+export function percentageToHex(percentage: any): string;
+export function hexToPercentage(hexOpacity: any): number;
+export function getColorByEyeDropper(): Promise<{}>;
+export function handleTextColor(inputTextValue: any): any;
+export function getCssGradient(gradient: any): string;

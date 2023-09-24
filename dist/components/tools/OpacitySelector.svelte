@@ -1,10 +1,10 @@
 <script>
     //@ts-nocheck
     import { onMount } from 'svelte';
-    import {percentageToHex, hexToPercentage} from "$lib/utils/api"
+    import {percentageToHex, hexToPercentage} from "../../utils/api"
     import { createEventDispatcher } from 'svelte';
 
-    import CursorSelector from '$lib/components/tools/CursorSelector.svelte';
+    import CursorSelector from './CursorSelector.svelte';
 
     export let colorOpacity
     export let opacity = "FF"
