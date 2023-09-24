@@ -1,7 +1,7 @@
 <script>
     //@ts-nocheck
     import { onMount } from 'svelte';  
-    import {getColorByEyeDropper, handleTextColor, hexToPercentage, getCssGradient, sleep} from "$lib/utils/api"
+    import {getColorByEyeDropper, handleTextColor, hexToPercentage, getCssGradient, sleep, deepClone} from "$lib/utils/api"
     import { createEventDispatcher } from 'svelte';
 
     import RainbowSelector from '$lib/components/tools/RainbowSelector.svelte';
@@ -48,7 +48,8 @@
     let gradientColors;
 
     let gradientReturn;
-
+    
+    let gradientToEdit
 
     let isShadeCursorMoving = false
     let isOpacityCursorMoving = false
@@ -59,7 +60,7 @@
     let listSavedColor = []
 
 
-    $: setUpColor(gradient)
+    $: setUpColor(deepClone(gradient))
     
     $: onGradientChange(isRainbowCursorMoving)
     $: onGradientChange(isShadeCursorMoving)
@@ -109,6 +110,7 @@
     }
 
     function initGradient(gradient){
+        gradientToEdit = deepClone(gradient)
         colorHexa = gradient[0].color
         let textColor = handleTextColor(colorHexa)
  
@@ -237,7 +239,7 @@
     function addColor(){
         listSavedColor = [...listSavedColor, {
             type: "gradient",
-            gradient: JSON.parse(JSON.stringify(gradientColors))
+            gradient: deepClone(gradientColors)
         }];
         localStorage.setItem('listSavedColor', JSON.stringify(listSavedColor));
     }
@@ -266,7 +268,7 @@
     <svelte:body on:pointerup={onPointerUp}/>
      <!-- svelte-ignore a11y-no-noninteractive-element-to-interactive-role -->
         <div class="gradientTools">
-            <GradientSelector bind:isGradientCursorMoving  gradientColors={gradient} color={fullHexaColor} on:cursorselected={changeSelectedColor} on:gradientchanging={onGradientChanging} on:gradientchanged/>
+            <GradientSelector bind:isGradientCursorMoving  gradientColors={gradientToEdit} color={fullHexaColor} on:cursorselected={changeSelectedColor} on:gradientchanging={onGradientChanging} on:gradientchanged/>
         </div>
        
         <div class="colorAjustement">

@@ -8,3 +8,4 @@ export function hexToPercentage(hexOpacity: any): number;
 export function getColorByEyeDropper(): Promise<{}>;
 export function handleTextColor(inputTextValue: any): any;
 export function getCssGradient(gradient: any): string;
+export function deepClone(obj: any): any;

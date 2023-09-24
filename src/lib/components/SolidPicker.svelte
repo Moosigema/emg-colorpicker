@@ -192,9 +192,12 @@
             type: "solid",
             color: fullHexaColor
         }
-        listSavedColor.push(newColor)
-        listSavedColor = listSavedColor
-        localStorage.setItem('listSavedColor', JSON.stringify(listSavedColor));
+        if(fullHexaColor.substring(7,10) != "00"){
+            listSavedColor.push(newColor)
+            listSavedColor = listSavedColor
+            localStorage.setItem('listSavedColor', JSON.stringify(listSavedColor));
+        }
+        
     }
 
 </script>

@@ -2,7 +2,9 @@
     //@ts-nocheck
     import { onMount } from 'svelte';
     import { createEventDispatcher } from 'svelte';
-    import {determineRainbowColor, findPercentageByColor,  getCssGradient} from "$lib/utils/api"
+    import {visibleStore} from "$lib/stores/colorPickerStore"
+
+    import {determineRainbowColor, findPercentageByColor,  getCssGradient,deepClone} from "$lib/utils/api"
 
     import CursorSelector from '$lib/components/tools/CursorSelector.svelte';
     
@@ -24,18 +26,22 @@
     let pickerGradientBar;
     let pickerGradientLeft;
     let  pickerGradientWidth
+    let gradientToEdit;
     
     let linearCss;
     let movingCursorIndex = 0
     
-    $: gradientColors, setGradient()
+    $: gradientColors, setGradient(gradientColors)
     $: color, changeColor()
+    $: $visibleStore, onVisibleChange()
     
     onMount(async () => {
         setPickerGradientBar()
-        setGradient()
     })
 
+    function onVisibleChange(){
+        movingCursorIndex = 0
+    }
 
     function setPickerGradientBar(){
         if(pickerGradientBar != null){
@@ -44,27 +50,34 @@
         } 
     }
 
-    function setGradient(){
+    function setGradient(gradient){
+        gradientToEdit = deepClone(gradient)
+
+        setGradientCSS(deepClone(gradientToEdit))
+    }
+
+    function setGradientCSS(gradient){
+        
         linearCss = 'linear-gradient(90deg'
-        for(let i =0; i <  gradientColors.length; i++){
-            linearCss += ','+gradientColors[i].color+' '+gradientColors[i].pourcentage+'%'
+        for(let i =0; i <  gradient.length; i++){
+            linearCss += ','+gradient[i].color+' '+gradient[i].pourcentage+'%'
         }
         linearCss += ')'
-        dispatch('gradientchanging', {"gradient": gradientColors, "gradientCss": linearCss})
+        dispatch('gradientchanging', {"gradient": gradient, "gradientCss": linearCss})
     }
 
     function changeColor(){
-        gradientColors[movingCursorIndex].color = color
-        gradientColors = [...gradientColors];
-        setGradient()
-        dispatch('gradientchanging', {"gradient": gradientColors, "gradientCss": linearCss})
+        gradientToEdit[movingCursorIndex].color = color
+        gradientToEdit = [...gradientToEdit];
+        setGradient(gradientToEdit)
+        dispatch('gradientchanging', {"gradient": gradientToEdit, "gradientCss": linearCss})
     }
 
 
     function handleGradientCursor(index){
         isGradientCursorMoving = true
         movingCursorIndex = index
-        dispatch('cursorselected', {"color": gradientColors[movingCursorIndex].color})
+        dispatch('cursorselected', {"color": gradientToEdit[movingCursorIndex].color})
     }
 
     function onPointerMove(e){
@@ -74,24 +87,24 @@
             }
             let tempPosition =((e.x-pickerGradientLeft)/(pickerGradientWidth))*100
             if(tempPosition >=0 && tempPosition <= 100){
-                gradientColors[movingCursorIndex].pourcentage = parseInt(tempPosition)
-                if(movingCursorIndex == 0 || (movingCursorIndex < gradientColors.length-1)){
-                    if(tempPosition > gradientColors[movingCursorIndex +1].pourcentage){
+                gradientToEdit[movingCursorIndex].pourcentage = parseInt(tempPosition)
+                if(movingCursorIndex == 0 || (movingCursorIndex < gradientToEdit.length-1)){
+                    if(tempPosition > gradientToEdit[movingCursorIndex +1].pourcentage){
                         movingCursorIndex +=1
                         sortGradient()
                        
                     }
                 }
                 
-                if(movingCursorIndex == gradientColors.length-1 || movingCursorIndex > 0){
-                    if(tempPosition < gradientColors[movingCursorIndex -1].pourcentage){
+                if(movingCursorIndex == gradientToEdit.length-1 || movingCursorIndex > 0){
+                    if(tempPosition < gradientToEdit[movingCursorIndex -1].pourcentage){
                         movingCursorIndex -=1
                         sortGradient()
                         
                     }
                 }
 
-                gradientColors = gradientColors
+                gradientToEdit = gradientToEdit
                 
             }
             
@@ -111,16 +124,16 @@
                     pourcentage: parseInt(tempPosition),
                     color: color
                 }
-                gradientColors = await insertOrdered(gradientColors, newElement)
-                dispatch('gradientchanged', {"gradient": gradientColors, "gradientCss":  getCssGradient(gradientColors)})
+                gradientToEdit = await insertOrdered(gradientToEdit, newElement)
+                dispatch('gradientchanged', {"gradient": gradientToEdit, "gradientCss":  getCssGradient(gradientToEdit)})
             }
     }
 
     function onDblClickCursor(index){
-        if(gradientColors.length > 2){
-            gradientColors.splice(index,1)
-            gradientColors = gradientColors
-            dispatch('gradientchanged', {"gradient": gradientColors, "gradientCss":  getCssGradient(gradientColors)})
+        if(gradientToEdit.length > 2){
+            gradientToEdit.splice(index,1)
+            gradientToEdit = gradientToEdit
+            dispatch('gradientchanged', {"gradient": gradientToEdit, "gradientCss":  getCssGradient(gradientToEdit)})
         }
     }
 
@@ -140,8 +153,8 @@
     }
 
     function sortGradient(){
-        gradientColors.sort((a, b) => a.pourcentage - b.pourcentage);
-        gradientColors = gradientColors
+        gradientToEdit.sort((a, b) => a.pourcentage - b.pourcentage);
+        gradientToEdit = gradientToEdit
     }
 
 
@@ -160,7 +173,7 @@
         on:dblclick|stopPropagation={onDblClickArea}
         style="background: {linearCss}">
 
-        {#each gradientColors as color, index}
+        {#each gradientToEdit as color, index}
             <CursorSelector coordinates={{y: "50%", x: color.pourcentage+"%"}} selected={(index == movingCursorIndex ? true : false)} on:pointerdown={()=>{handleGradientCursor(index)}} on:dblclick={()=>{onDblClickCursor(index)}}/>
             
         {/each}

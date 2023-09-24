@@ -1,7 +1,7 @@
 <script>
     //@ts-nocheck
     import { onMount } from 'svelte';  
-    import {getColorByEyeDropper, handleTextColor, hexToPercentage, getCssGradient, sleep} from "../utils/api"
+    import {getColorByEyeDropper, handleTextColor, hexToPercentage, getCssGradient, sleep, deepClone} from "../utils/api"
     import { createEventDispatcher } from 'svelte';
 
     import RainbowSelector from './tools/RainbowSelector.svelte';
@@ -59,7 +59,7 @@
     let listSavedColor = []
 
 
-    $: setUpColor(gradient)
+    $: setUpColor(deepClone(gradient))
     
     $: onGradientChange(isRainbowCursorMoving)
     $: onGradientChange(isShadeCursorMoving)
