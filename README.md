@@ -52,7 +52,7 @@ The saved colors are stored in the localStorage.
 ```
 
 
-For now you only have 3 parameters :
+For now you only have 5 parameters :
 
 - `solidColor` : *string* type, color value for initialization, it has to be in hexa format  : "#FFFFFF", or hexa format with opacity : "#FFFFFFFF"
 - `gradientColors`: *array* type, gradient value for initialization, format : ```
@@ -93,6 +93,10 @@ colorPickerCoordinates = {
 }
 
 ```
+
+
+And you have 4 event listeners : 
+
 
 - `on:colorchanged`, event listener, it will be triggered when you haved changed the color. You will have access to 3 variables : 
 ```
