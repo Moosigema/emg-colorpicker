@@ -1,5 +1,7 @@
 <script>
     //@ts-nocheck
+    import {visibleStore} from "../stores/colorPickerStore"
+
     import SolidPicker from "./SolidPicker.svelte";
     import GradientPicker from "./GradientPicker.svelte";
 
@@ -24,10 +26,14 @@
     }
     export let useGradient = false
 
+    
+
     let themeColor = "#01093f"
     
     let solidSelected = true
     let gradientSelected = false
+
+    $: onVisibleChange(visible)
 
     function switchTo(type){
         if(type =="gradient"){
@@ -37,6 +43,13 @@
             solidSelected = true
             gradientSelected = false
         }
+    }
+
+    function onVisibleChange(visiblePicker){
+        visibleStore.set({
+            visible: visiblePicker,
+            timestamp: Date.now()
+        })
     }
 
 </script>

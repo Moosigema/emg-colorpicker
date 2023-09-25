@@ -105,7 +105,7 @@
                 }
 
                 gradientToEdit = gradientToEdit
-                
+                setGradientCSS(gradientToEdit)
             }
             
         }

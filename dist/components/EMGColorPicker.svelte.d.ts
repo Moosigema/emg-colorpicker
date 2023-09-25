@@ -3,6 +3,7 @@
 /** @typedef {typeof __propDef.slots}  EmgColorPickerSlots */
 export default class EmgColorPicker extends SvelteComponentTyped<{
     solidColor: any;
+    visible?: boolean | undefined;
     coordinates?: {
         x: number;
         y: number;
@@ -11,7 +12,6 @@ export default class EmgColorPicker extends SvelteComponentTyped<{
         pourcentage: number;
         color: string;
     }[] | undefined;
-    visible?: boolean | undefined;
     useGradient?: boolean | undefined;
 }, {
     pointerdown: PointerEvent;
@@ -30,6 +30,7 @@ import { SvelteComponentTyped } from "svelte";
 declare const __propDef: {
     props: {
         solidColor: any;
+        visible?: boolean | undefined;
         coordinates?: {
             x: number;
             y: number;
@@ -38,7 +39,6 @@ declare const __propDef: {
             pourcentage: number;
             color: string;
         }[] | undefined;
-        visible?: boolean | undefined;
         useGradient?: boolean | undefined;
     };
     events: {

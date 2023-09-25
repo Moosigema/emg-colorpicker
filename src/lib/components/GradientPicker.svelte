@@ -76,7 +76,7 @@
 
     function onGradientChange(cursorUp){
         
-        if(!cursorUp){
+        if(!cursorUp){  
             dispatch('gradientchanged', gradientReturn);
         }
     }
@@ -111,6 +111,7 @@
 
     function initGradient(gradient){
         gradientToEdit = deepClone(gradient)
+        gradientReturn = deepClone(gradient)
         colorHexa = gradient[0].color
         let textColor = handleTextColor(colorHexa)
  
@@ -189,7 +190,6 @@
     async function openEyeDropper(){
         if(hasEyeDropperSupport){
             let response = await getColorByEyeDropper()
-            console.log(response)
             if(response.statusCode == "200"){
                 setRainbowCursor(response.result.color)
                 setOpacityCursor("FF")

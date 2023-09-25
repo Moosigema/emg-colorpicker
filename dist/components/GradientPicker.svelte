@@ -48,7 +48,8 @@
     let gradientColors;
 
     let gradientReturn;
-
+    
+    let gradientToEdit
 
     let isShadeCursorMoving = false
     let isOpacityCursorMoving = false
@@ -75,7 +76,7 @@
 
     function onGradientChange(cursorUp){
         
-        if(!cursorUp){
+        if(!cursorUp){  
             dispatch('gradientchanged', gradientReturn);
         }
     }
@@ -109,6 +110,8 @@
     }
 
     function initGradient(gradient){
+        gradientToEdit = deepClone(gradient)
+        gradientReturn = deepClone(gradient)
         colorHexa = gradient[0].color
         let textColor = handleTextColor(colorHexa)
  
@@ -187,7 +190,6 @@
     async function openEyeDropper(){
         if(hasEyeDropperSupport){
             let response = await getColorByEyeDropper()
-            console.log(response)
             if(response.statusCode == "200"){
                 setRainbowCursor(response.result.color)
                 setOpacityCursor("FF")
@@ -237,7 +239,7 @@
     function addColor(){
         listSavedColor = [...listSavedColor, {
             type: "gradient",
-            gradient: JSON.parse(JSON.stringify(gradientColors))
+            gradient: deepClone(gradientColors)
         }];
         localStorage.setItem('listSavedColor', JSON.stringify(listSavedColor));
     }
@@ -266,7 +268,7 @@
     <svelte:body on:pointerup={onPointerUp}/>
      <!-- svelte-ignore a11y-no-noninteractive-element-to-interactive-role -->
         <div class="gradientTools">
-            <GradientSelector bind:isGradientCursorMoving  gradientColors={gradient} color={fullHexaColor} on:cursorselected={changeSelectedColor} on:gradientchanging={onGradientChanging} on:gradientchanged/>
+            <GradientSelector bind:isGradientCursorMoving  gradientColors={gradientToEdit} color={fullHexaColor} on:cursorselected={changeSelectedColor} on:gradientchanging={onGradientChanging} on:gradientchanged/>
         </div>
        
         <div class="colorAjustement">
