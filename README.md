@@ -66,14 +66,14 @@ The following parameters are available:
 - `gradientColors` (array): Initial gradient value in the following format:
 ```json
 [
- {
-        pourcentage: int,
-        color: string (hexa format)
-    },
-    {
-        pourcentage: int,
-        color: string (hexa format)
-    }
+ 	{
+		"pourcentage": 0,
+		"color": "#01093FFF"
+	},
+	{
+		"pourcentage": 100,
+		"color": "#1458FFFF"
+	}
 ]
 ```
 
@@ -99,14 +99,14 @@ The following event listeners are available:
 	- `e.detail.gradient` --> gradient array, example : 
 ```
 [
-	    {
-	        "pourcentage": 0,
-	        "color": "#01093FFF"
-	    },
-	    {
-	        "pourcentage": 100,
-	        "color": "#1458FFFF"
-	    }
+	{
+		"pourcentage": 0,
+		"color": "#01093FFF"
+	},
+	{
+		"pourcentage": 100,
+		"color": "#1458FFFF"
+	}
 ]
 ```
 
