@@ -1,16 +1,26 @@
 
-## Description
-emg-color-picker is custom color picker that can replace the default browser color picker. It is written is svelte. For now, you can only have hexa values (with opacity) and gradients, but I plan to add RGV and other formats.
-The saved colors are stored in the localStorage.
+# EMG Color Picker
 
-## How to use it ?
+**emg-color-picker** is a custom color picker built with Svelte that can replace the default browser color picker. It currently supports hexa values (with opacity) and gradients, with plans to add support for RGB and other formats. Saved colors are stored in the browser's localStorage.
+
+## Usage
+
+To use the **EMG Color Picker**, follow these steps:
+
+1. Install it using npm:
+
+   ```bash
+   npm install emg-colorpicker
+   ```
+
+2. Import the EMGColorPicker component in your Svelte script:
 
 ```svelte
 <script>
-	import {EMGColorPicker} from 'emg-colorpicker';
-	
-	let hexa = "#1458FFFF"
-	let gradientColors = [
+    import { EMGColorPicker } from 'emg-colorpicker';
+
+    let hexa = "#1458FFFF";
+    let gradientColors = [
         {
             pourcentage: 0,
             color: "#01093f"
@@ -19,106 +29,76 @@ The saved colors are stored in the localStorage.
             pourcentage: 100,
             color: "#1458FFFF"
         }
-    ]
+    ];
 
-	let visible = true
+    let visible = true;
 
-    
-    function onColorChanged(e){
-        console.log(e.detail.fullHexaColor)
-        console.log(e.detail.shortHexaColor)
-        console.log(e.detail.hexaColorOpacity)
-        console.log(e.detail.intColorOpacity)
+    function onColorChanged(e) {
+        console.log(e.detail.fullHexaColor);
+        console.log(e.detail.shortHexaColor);
+        console.log(e.detail.hexaColorOpacity);
+        console.log(e.detail.intColorOpacity);
     }
 
-	function onColorChanging(){
-		console.log("changing color")
-	}
-
-    function onGradientChanged(e){
-	    console.log(e.detail.gradientCss)
-		console.log(e.detail.gradient)
+    function onColorChanging() {
+        console.log("changing color");
     }
 
-	function onGradientChanging(){
-		console.log("changing gradient")
-	}
-}
+    function onGradientChanged(e) {
+        console.log(e.detail.gradientCss);
+        console.log(e.detail.gradient);
+    }
 
+    function onGradientChanging() {
+        console.log("changing gradient");
+    }
 </script>
 
-<EMGColorPicker solidColor={hexa} gradientColors={gradientColors} bind:visible useGradient={true} coordinates={{x: 200,y:200}} on:colorchanged={onColorChanged} on:colorchanging={onColorChanging} on:gradientchanged={onGradientChanged} on:gradientchanging={onGradientChanging}/>
-
+<EMGColorPicker solidColor={hexa} gradientColors={gradientColors} bind:visible useGradient={true} coordinates={{ x: 200, y: 200 }} on:colorchanged={onColorChanged} on:colorchanging={onColorChanging} on:gradientchanged={onGradientChanged} on:gradientchanging={onGradientChanging} />
 ```
 
+### Parameters
 
-For now you only have 5 parameters :
+The following parameters are available:
 
-- `solidColor` : *string* type, color value for initialization, it has to be in hexa format  : "#FFFFFF", or hexa format with opacity : "#FFFFFFFF"
-- `gradientColors`: *array* type, gradient value for initialization, format : ```
-```
-[
-	{
-		pourcentage: int,
-		color: string (hexa format), 
-	},
-	{
-		pourcentage: int,
-		color: string (hexa format), 
-	}
-]
-    
-example: 
-[
-	{
-		pourcentage: 0,
-		color: "#01093FF"
-	},
-	{
-		pourcentage: 100,
-		color: "#1458FFFF"
-	}
-]
+- `solidColor` (string): Initial color value in hexa format (e.g., "#FFFFFF") or hexa format with opacity (e.g., "#FFFFFFFF").
 
-```
-- `visible` : *boolean* type, if true, the color picker is visible, false the color picker is invisible.
-- `useGradient` *boolean* type, if true, you will tools for gradient color
-- `coordinates` : *object* type, the color picker has the css attribute `position: absolute;` and `x` (`int` type) is for `left` attribute in px and `y` is for `top` attribute
-
+- `gradientColors` (array): Initial gradient value in the following format:
 ```json
-
-colorPickerCoordinates = {
-	"x": 300,
-	"y": 300
-}
-
+[
+ {
+        pourcentage: int,
+        color: string (hexa format)
+    },
+    {
+        pourcentage: int,
+        color: string (hexa format)
+    }
+]
 ```
 
+- `visible` (boolean): If true, the color picker is visible; if false, it's invisible.
 
-And you have 4 event listeners : 
+- `useGradient` (boolean): If true, gradient color tools are enabled.
 
+- `coordinates` (object): Specifies the position of the color picker with x (for left attribute in px) and y (for top attribute in px).
 
-- `on:colorchanged`, event listener, it will be triggered when you haved changed the color. You will have access to 3 variables : 
-```
-e.detail.fullHexaColor     --> hexa color with opacity, example : "#FFFFFFFF"
-e.detail.shortHexaColor    --> hexa color without opacity, example : "#FFFFFF"
-e.detail.hexaColorOpacity  --> hexa color opacity , example : "FF"
-e.detail.intColorOpacity   --> int color opacity , example : 100
-```
+### Event Listeners
 
-- `on:colorchanging`, event listener, it will be triggered when you are changing the color. You will have access to 3 variables : 
-```
-e.detail.fullHexaColor     --> hexa color with opacity, example : "#FFFFFFFF"
-e.detail.shortHexaColor    --> hexa color without opacity, example : "#FFFFFF"
-e.detail.hexaColorOpacity  --> hexa color opacity , example : "FF"
-e.detail.intColorOpacity   --> int color opacity , example : 100
-```
+The following event listeners are available:
 
-- `on:gradientchanged`, event listener, it will be triggered when you have changed the gradient. You will have access to 2 variables : 
+- `on:colorchanged`: Triggered when the color is changed, providing access to:
+	- `e.detail.fullHexaColor`  --> hexa color with opacity, example : "#FFFFFFFF"
+	- `e.detail.shortHexaColor` --> hexa color without opacity, example : "#FFFFFF"
+	- `e.detail.hexaColorOpacity` --> hexa color opacity , example : "FF"
+	- `e.detail.intColorOpacity` --> int color opacity , example : 100
+- `on:colorchanging`: Triggered during color changes, providing the same details as above.
+
+- `on:gradientchanged`: Triggered when the gradient is changed, providing access to:
+	- `e.detail.gradientCss` --> gradient css value, example : `linear-gradient(90deg,#01093FFF 0%,#1458FFFF 100%)`
+	- `e.detail.gradient` --> gradient array, example : 
 ```
-e.detail.gradientCss  --> gradient css value, example : linear-gradient(90deg,#01093FFF 0%,#1458FFFF 100%)
-e.detail.gradient     --> gradient array, example : 
-	[
+[
 	    {
 	        "pourcentage": 0,
 	        "color": "#01093FFF"
@@ -127,22 +107,7 @@ e.detail.gradient     --> gradient array, example :
 	        "pourcentage": 100,
 	        "color": "#1458FFFF"
 	    }
-	]
+]
 ```
 
-- `on:gradientchanging`, event listener, it will be triggered when you are changing the gradient. You will have access to 2 variables : 
-```
-e.detail.gradientCss  --> gradient css value, example : linear-gradient(90deg,#01093FFF 0%,#1458FFFF 100%)
-e.detail.gradient     --> gradient array, example : 
-	[
-	    {
-	        "pourcentage": 0,
-	        "color": "#01093FFF"
-	    },
-	    {
-	        "pourcentage": 100,
-	        "color": "#1458FFFF"
-	    }
-	]
-```
-
+- `on:gradientchanging`: Triggered during gradient changes, providing the same details as above.
