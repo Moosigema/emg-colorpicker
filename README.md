@@ -97,7 +97,7 @@ The following event listeners are available:
 - `on:gradientchanged`: Triggered when the gradient is changed, providing access to:
 	- `e.detail.gradientCss` --> gradient css value, example : `linear-gradient(90deg,#01093FFF 0%,#1458FFFF 100%)`
 	- `e.detail.gradient` --> gradient array, example : 
-```
+```json
 [
 	{
 		"pourcentage": 0,
