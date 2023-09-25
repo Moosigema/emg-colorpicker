@@ -1,5 +1,5 @@
 
-# EMG Color Picker
+# EMG ColorPicker
 
 **emg-color-picker** is a custom color picker built with Svelte that can replace the default browser color picker. It currently supports hexa values (with opacity) and gradients, with plans to add support for RGB and other formats. Saved colors are stored in the browser's localStorage.
 
